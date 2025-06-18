@@ -1,0 +1,116 @@
+// Initialize the current player to 'X'
+let currentPlayer = 'X';
+
+// Initialize the game board as an array of 9 empty strings
+let gameBoard = new Array(9).fill('');
+
+// Initialize a flag to track if the game is over
+let gameOver = false;
+
+// Get all cell elements
+const cells = document.querySelectorAll('.cell');
+
+// Get the current player element
+const currentPlayerElement = document.getElementById('current-player');
+
+// Get the game result element
+const gameResultElement = document.getElementById('game-result');
+
+// Get the reset button element
+const resetButton = document.getElementById('reset-btn');
+
+// Add event listeners to each cell
+cells.forEach((cell) => {
+    // Get the index of the cell
+    cell.addEventListener('click', () => {
+        const index = parseInt(cell.dataset.index);
+
+        // Check if the game is over or the cell is already occupied
+        if (gameOver || gameBoard[index] !== '') return;
+
+        // Update the game board and cell text content
+        gameBoard[index] = currentPlayer;
+        cell.textContent = currentPlayer;
+
+        // Check for win conditions
+        checkWinCondition();
+
+        // Switch the current player
+        switchPlayer();
+    });
+});
+
+// Add event listener to the reset button
+resetButton.addEventListener('click', resetGame);
+
+// Function to check for win conditions
+function checkWinCondition() {
+    // Define the win conditions
+    const winConditions = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+
+    // Check each win condition
+    for (const condition of winConditions) {
+        // If all cells in the condition have the same player and are not empty
+        if (
+            gameBoard[condition[0]] === gameBoard[condition[1]] &&
+            gameBoard[condition[1]] === gameBoard[condition[2]] &&
+            gameBoard[condition[0]] !== ''
+        ) {
+            // Set the game over flag to true and display the win message
+            gameOver = true;
+            gameResultElement.textContent = `Player ${gameBoard[condition[0]]} wins!`;
+            return;
+        }
+    }
+
+    // If all cells are filled and no one has won, it's a tie
+    if (!gameBoard.includes('')) {
+        gameOver = true;
+        gameResultElement.textContent = 'It\'s a tie!';
+    }
+}
+
+// Function to switch the current player
+function switchPlayer() {
+    // Toggle the current player between 'X' and 'O'
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+    // Update the current player element text content
+    currentPlayerElement.textContent = `Current Player: ${currentPlayer}`;
+}
+
+// Function to reset the game
+function resetGame() {
+    // Reset the current player to 'X'
+    currentPlayer = 'X';
+
+    // Reset the game board
+    gameBoard = new Array(9).fill('');
+
+    // Reset the game over flag
+    gameOver = false;
+
+    // Clear the cell text content
+    cells.forEach((cell) => {
+        cell.textContent = '';
+    });
+
+    // Reset the current player element text content
+    currentPlayerElement.textContent = `Current Player: X`;
+
+    // Clear the game result element text content
+    gameResultElement.textContent = '';
+}
+
+
+
+
